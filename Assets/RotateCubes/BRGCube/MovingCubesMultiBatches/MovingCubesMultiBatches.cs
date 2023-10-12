@@ -17,6 +17,9 @@ namespace RotateCubes.BRGCube.MovingCubesMultiBatches
 {
     public class MovingCubesMultiBatches : MonoBehaviour
     {
+        /// <summary>
+        /// 渲染的网格id和材质id
+        /// </summary>
         private struct DrawKey : IEquatable<DrawKey>, IComparable<DrawKey>
         {
             public BatchMeshID MeshID;
@@ -45,6 +48,9 @@ namespace RotateCubes.BRGCube.MovingCubesMultiBatches
             public bool Equals(DrawKey other) => CompareTo(other) == 0;
         }
         
+        /// <summary>
+        /// srp批次，有批次id，实例偏移和数量
+        /// </summary>
         private struct SrpBatch
         {
             public BatchID BatchID;
@@ -53,11 +59,12 @@ namespace RotateCubes.BRGCube.MovingCubesMultiBatches
             public int InstanceOffset;
             public int InstanceCount;
         }
-
+        //实例group的属性
         public int instanceCount;
         public float rotateSpeed;
         public float moveSpeed;
-
+        
+        
         public List<Material> materials;
         public List<Mesh> meshes;
 
@@ -564,6 +571,14 @@ namespace RotateCubes.BRGCube.MovingCubesMultiBatches
             return JobHandle.CombineDependencies(handles);
         }
 
+        /// <summary>
+        /// 剔除job
+        /// </summary>
+        /// <param name="rendererGroup"></param>
+        /// <param name="cullingContext"></param>
+        /// <param name="cullingOutput"></param>
+        /// <param name="userContext"></param>
+        /// <returns></returns>
         public unsafe JobHandle OnPerformCulling(
             BatchRendererGroup rendererGroup,
             BatchCullingContext cullingContext,
@@ -580,6 +595,9 @@ namespace RotateCubes.BRGCube.MovingCubesMultiBatches
             return new JobHandle();
         }
         
+        /// <summary>
+        /// 剔除job
+        /// </summary>
         [BurstCompile]
         private unsafe struct CullingJob : IJobFor
         {
@@ -641,7 +659,12 @@ namespace RotateCubes.BRGCube.MovingCubesMultiBatches
                 }
             }
         }
-
+        
+        /// <summary>
+        /// 剔除线程
+        /// </summary>
+        /// <param name="drawCommands"></param>
+        /// <param name="cullingPlanes"></param>
         private unsafe void CullingThreaded(ref BatchCullingOutputDrawCommands drawCommands, NativeArray<Plane> cullingPlanes)
         {
             drawCommands.visibleInstances = Malloc<int>(instanceCount);
@@ -725,7 +748,12 @@ namespace RotateCubes.BRGCube.MovingCubesMultiBatches
                 }
             }
         }
-
+        
+        /// <summary>
+        /// 主线程剔除
+        /// </summary>
+        /// <param name="drawCommands"></param>
+        /// <param name="cullingPlanes"></param>
         private unsafe void CullingMainThread(ref BatchCullingOutputDrawCommands drawCommands, NativeArray<Plane> cullingPlanes)
         {
             var batchCount = _drawBatches.Length;
@@ -786,7 +814,12 @@ namespace RotateCubes.BRGCube.MovingCubesMultiBatches
             drawCommands.instanceSortingPositions = null;
             drawCommands.instanceSortingPositionFloatCount = 0;
         }
-
+        
+        /// <summary>
+        /// 设置绘画范围
+        /// </summary>
+        /// <param name="drawCommands"></param>
+        /// <param name="drawCommandsCount"></param>
         private unsafe void SetupDrawRanges(ref BatchCullingOutputDrawCommands drawCommands, int drawCommandsCount)
         {
             //Assume only have 1 draw range
@@ -808,6 +841,7 @@ namespace RotateCubes.BRGCube.MovingCubesMultiBatches
                 }
             };
         }
+        
         
         [BurstCompile]
         public static FrustumPlanes.IntersectResult Intersect(NativeArray<Plane> cullingPlanes, ref AABB a)

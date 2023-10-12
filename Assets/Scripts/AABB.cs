@@ -39,6 +39,11 @@ namespace Unity.Mathematics
             return true;
         }
 
+        /// <summary>
+        /// aabb中是否包含aabb中的所有点
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public bool Contains(AABB b)
         {
             return Contains(b.Center + float3(-b.Extents.x, -b.Extents.y, -b.Extents.z))
@@ -55,7 +60,12 @@ namespace Unity.Mathematics
         {
             return math.abs(m0 * extents.x) + math.abs(m1 * extents.y) + math.abs(m2 * extents.z);
         }
-
+        /// <summary>
+        /// 矩阵变换，从本地到另一个坐标系的包围盒
+        /// </summary>
+        /// <param name="transform"></param>
+        /// <param name="localBounds"></param>
+        /// <returns></returns>
         public static AABB Transform(float4x4 transform, AABB localBounds)
         {
             AABB transformed;
