@@ -9,6 +9,9 @@ using UnityEngine.Rendering;
 
 public unsafe class BRGSetup : MonoBehaviour
 {
+    /// <summary>
+    /// 预注册网格和材质
+    /// </summary>
     public Mesh m_mesh;
     public Material m_material;
     public bool m_cullTest = false;
