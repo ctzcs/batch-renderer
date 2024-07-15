@@ -307,7 +307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a53e9f039543969592a6f626cc90d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  instanceCount: 10000
+  instanceCount: 100000
   rotateSpeed: 60
   moveSpeed: 10
   materials:
